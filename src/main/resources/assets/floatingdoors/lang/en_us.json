@@ -1,0 +1,13 @@
+{
+  "itemGroup.floatingdoors": "Example Mod Tab",
+  "block.floatingdoors.example_block": "Example Block",
+  "item.floatingdoors.example_item": "Example Item",
+
+  "floatingdoors.configuration.title": "Floating Doors Configs",
+  "floatingdoors.configuration.section.floatingdoors.common.toml": "Floating Doors Configs",
+  "floatingdoors.configuration.section.floatingdoors.common.toml.title": "Floating Doors Configs",
+  "floatingdoors.configuration.items": "Item List",
+  "floatingdoors.configuration.logDirtBlock": "Log Dirt Block",
+  "floatingdoors.configuration.magicNumberIntroduction": "Magic Number Text",
+  "floatingdoors.configuration.magicNumber": "Magic Number"
+}

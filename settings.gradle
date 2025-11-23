@@ -1,8 +1,9 @@
 pluginManagement {
     repositories {
-        mavenCentral()
         gradlePluginPortal()
-        maven { url = 'https://maven.minecraftforge.net' }
     }
 }
-rootProject.name = 'floatingdoors'
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
