@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -46,10 +47,11 @@ public abstract class DoorBlockMixin {
                         && aboveState.hasProperty(DoorBlock.HALF)
                         && aboveState.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER;
 
-        // Did we lose the block below (support)?
-        boolean lostSupport = belowState.isAir();
+        // Did we lose proper support below? Check if the block below cannot support the door
+        // This includes air, non-solid blocks (torches, flowers, etc.), and other non-supporting blocks
+        boolean lostSupport = belowState.isAir() || !belowState.isFaceSturdy(level, belowPos, Direction.UP);
 
-        // Only "rescue" the door when the *support block* is gone,
+        // Only "rescue" the door when proper support is gone,
         // but the door itself (upper half) is still intact.
         if (hasTopHalf && lostSupport) {
             cir.setReturnValue(true);
