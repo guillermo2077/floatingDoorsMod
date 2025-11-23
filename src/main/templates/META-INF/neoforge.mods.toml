@@ -9,7 +9,7 @@ displayName="Floating Doors"
 authors="Guille"
 description='''
 Makes doors float: breaking the block under a door no longer breaks the door.
+'''
 
 [[mixins]]
 config = "floatingdoors.mixins.json"
-'''

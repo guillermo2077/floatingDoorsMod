@@ -14,17 +14,45 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 @Mixin(DoorBlock.class)
 public abstract class DoorBlockMixin {
 
-    @Inject(method = "canSurvive", at = @At("HEAD"), cancellable = true)
-    private void floatingdoors$keepDoorWhenSupportIsGone(BlockState state,
-                                                         LevelReader level,
-                                                         BlockPos pos,
-                                                         CallbackInfoReturnable<Boolean> cir) {
-        // Only change behavior for the LOWER half of the door.
-        // The UPPER half still uses vanilla logic so it breaks
-        // if the bottom half is missing.
-        if (state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
+    @Inject(method = "canSurvive", at = @At("RETURN"), cancellable = true)
+    private void floatingdoors$allowFloatingLowerHalf(BlockState state,
+                                                      LevelReader level,
+                                                      BlockPos pos,
+                                                      CallbackInfoReturnable<Boolean> cir) {
+        // If vanilla already says it survives, don't touch it.
+        if (Boolean.TRUE.equals(cir.getReturnValue())) {
+            return;
+        }
+
+        // Only care about real door blocks with the HALF property.
+        if (!state.hasProperty(DoorBlock.HALF)) {
+            return;
+        }
+
+        // Only modify the LOWER half.
+        if (state.getValue(DoorBlock.HALF) != DoubleBlockHalf.LOWER) {
+            return;
+        }
+
+        BlockPos abovePos = pos.above();
+        BlockPos belowPos = pos.below();
+
+        BlockState aboveState = level.getBlockState(abovePos);
+        BlockState belowState = level.getBlockState(belowPos);
+
+        // Is there still a proper upper half?
+        boolean hasTopHalf =
+                aboveState.getBlock() instanceof DoorBlock
+                        && aboveState.hasProperty(DoorBlock.HALF)
+                        && aboveState.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER;
+
+        // Did we lose the block below (support)?
+        boolean lostSupport = belowState.isAir();
+
+        // Only "rescue" the door when the *support block* is gone,
+        // but the door itself (upper half) is still intact.
+        if (hasTopHalf && lostSupport) {
             cir.setReturnValue(true);
-            // setReturnValue already cancels the rest of the method.
         }
     }
 }

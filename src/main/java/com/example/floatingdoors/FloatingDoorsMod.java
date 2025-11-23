@@ -1,9 +1,6 @@
 package com.example.floatingdoors;
-
 import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
-
 import net.neoforged.fml.common.Mod;
 
 @Mod(FloatingDoorsMod.MOD_ID)
